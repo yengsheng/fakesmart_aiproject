@@ -14,9 +14,25 @@
             </select>
         </div>
         <br>
-        <form name="form", method="POST", style="text-align: center;">
-            <input type="file" id="myFile" name="filename">
+        <form method="post" action="/" enctype="multipart/form-data", style="text-align: center;">
+            <input type="file" id="myFile" name="file">
             <input type="submit">
         </form>
+        <p>
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <ul>
+                {% for message in messages %}
+                  <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+              {% endif %}
+            {% endwith %}
+        </p>
+        {% if filename %}
+            <div, style="text-align: center;">
+                <img src="{{ url_for('display_image', filename=filename) }}">
+            </div>
+        {% endif %}
     </body>
 </html>
