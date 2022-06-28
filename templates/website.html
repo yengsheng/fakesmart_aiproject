@@ -31,7 +31,13 @@
         </p>
         {% if filename %}
             <div, style="text-align: center;">
-                <img src="{{ url_for('display_image', filename=filename) }}">
+                <img src="{{ url_for('display_image', filename=filename) }}" width="35%">
+            </div>
+            <div, style="text-align: center;">
+                <img src="/static/images/noise.jpg" width="20%">
+            </div>
+            <div, style="text-align: center;">
+                <img src="{{ url_for('display_image', filename=filename) }}" width="35%">
             </div>
         {% endif %}
     </body>
