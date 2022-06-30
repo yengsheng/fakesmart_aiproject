@@ -1,4 +1,6 @@
-/data
+/data/*
 /venv
-/static/uploads
+/static/uploads/*
+/static/generated/*
+!/static/generated/sample.jpg
 /__pycache__

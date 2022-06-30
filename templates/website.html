@@ -1,44 +1,55 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Fake Smart Adversarial Machine Learning</title>
+        <title>Adversarial Machine Learning - Fake Smart</title>
+        <link rel="stylesheet" href="{{ url_for('static',filename='website.css') }}">
     </head>
-    <body>
-        <div class="dropdown", style="text-align: center;">
-            <label for="desired-misclass">Choose your desired misclassification:</label>
-            <select name="misclasses" id="misclasses">
-                <option value="stop">Stop Sign</option>
-                <option value="traffic">Traffic Light</option>
-                <option value="speed">Speed Sign</option>
-                <option value="crosswalk">Crosswalk</option>
-            </select>
-        </div>
-        <br>
-        <form method="post" action="/" enctype="multipart/form-data", style="text-align: center;">
-            <input type="file" id="myFile" name="file">
-            <input type="submit">
-        </form>
-        <p>
-            {% with messages = get_flashed_messages() %}
-              {% if messages %}
-                <ul>
-                {% for message in messages %}
-                  <li>{{ message }}</li>
-                {% endfor %}
-                </ul>
-              {% endif %}
-            {% endwith %}
-        </p>
-        {% if filename %}
-            <div, style="text-align: center;">
-                <img src="{{ url_for('display_image', filename=filename) }}" width="35%">
+    <form method="post" action="/" enctype="multipart/form-data", style="text-align: center;">
+        <body>
+            <h1>Adverserial Machine Learning</h1>
+            <div id="main">
+                <div id="input">
+                    <h4>Upload your image</h4>
+                    <input type="file" id="myFile" name="file">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <h4>{{ message }}</h4>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    {% if input %}
+                        <img src="{{ url_for('input_image', inputname=input.inputname) }}" width="35%">
+                        <h5>File Name      : {{input.inputname}}</h5>
+                        <h5>Classification : {{input.classification}}</h5>
+                        <h5>Confidence     : {{input.confidence}}</h5>
+                    {% endif %}
+                </div>
+                <div id="filter">
+                    <h4>Choose your filter</h4>
+                    <select name="selected">
+                        {% for f in data %}
+                        <option value="{{f.name}}">{{f.name}}</option>
+                        {% endfor %}
+                    </select>
+                    {% if filterselected %}
+                        <br><br><br>
+                        <img src="{{ url_for('filter_image', filtername=filterselected) }}" width="35%">
+                        <h5>Filter Selected  : {{filterselected}}</h5>
+                    {% endif %}
+                </div>
+                <div id="output">
+                    <h4>Output Classification & Image</h4>
+                    <button type="submit">Generate</button>
+                    {% if output %}
+                        <br><br><br>
+                        <img src="{{ url_for('output_image', outputname=output.outputname) }}" width="35%">
+                        <h5>File Name      : {{output.outputname}}</h5>
+                        <h5>Classification : {{output.classification}}</h5>
+                        <h5>Confidence     : {{output.confidence}}</h5>
+                    {% endif %}
+                </div>
             </div>
-            <div, style="text-align: center;">
-                <img src="/static/images/noise.jpg" width="20%">
-            </div>
-            <div, style="text-align: center;">
-                <img src="{{ url_for('display_image', filename=filename) }}" width="35%">
-            </div>
-        {% endif %}
-    </body>
+        </body>
+    </form>
 </html>

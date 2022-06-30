@@ -1,0 +1,46 @@
+body {
+    background-color: #6E6E6E;
+}
+h1 {
+    text-align: center;
+    color: #FFFFFF;
+}
+select {
+    background: #FFFFFF;
+    color: #000000;
+    align-items: center;
+}
+h5 {
+    text-align: left;
+}
+#main {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+#input, #filter, #output {
+    display: inline-block;
+    zoom: 1;
+    vertical-align: top;
+    text-align: center;
+    border-style: solid;
+    border-color: white;
+}
+#input {
+    height: 100%;
+    width: 33%;
+    background-color: #BCFD4C;
+    color: #000000;
+}
+#filter {
+    height: 100%;
+    width: 33%;
+    background-color: #6E6E6E;
+    color: #FFFFFF;
+}
+#output {
+    height: 100%;
+    width: 34%;
+    background-color: #BCFD4C;
+    color: #000000;
+}
