@@ -39,12 +39,12 @@ def generate():
 
         # TODO
         ## function to generate confidence score for original image
-        classification = prediction(os.path.join(app.config['UPLOAD_FOLDER'], inputname), app.model)
+        confidence, classification = prediction(os.path.join(app.config['UPLOAD_FOLDER'], inputname), app.model)
         # function to generate confidence score for new image with filter
 
         outputname = "sample.jpg"
 
-        inputData = {'inputname': inputname, 'confidence': "sampleConf", 'classification': classification}
+        inputData = {'inputname': inputname, 'confidence': confidence, 'classification': classification}
         outputData = {'outputname': outputname, 'confidence': "sampleConf", 'classification': "sampleClass"}
         return render_template('website.html', data=filterOptions(), input=inputData, filterselected=filtername, output=outputData)
     else:

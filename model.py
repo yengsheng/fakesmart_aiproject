@@ -64,6 +64,7 @@ def prediction(path, m):
   image = image/255
   image = image.float()
   y_pred = m(image)
-  _, y_pred_in = torch.max(y_pred, 1)
+  y_pred = F.softmax(y_pred, dim=1)
+  conf, y_pred_in = torch.max(y_pred, 1)
 
-  return classes[y_pred_in.numpy()[0]]
+  return conf.detach().numpy()[0] * 100, classes[y_pred_in.numpy()[0]]
