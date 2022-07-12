@@ -3,6 +3,7 @@ from app import app
 import urllib.request
 from flask import Flask, flash, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
+from model import *
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
@@ -38,11 +39,12 @@ def generate():
 
         # TODO
         ## function to generate confidence score for original image
+        classification = prediction(os.path.join(app.config['UPLOAD_FOLDER'], inputname), app.model)
         # function to generate confidence score for new image with filter
 
         outputname = "sample.jpg"
 
-        inputData = {'inputname': inputname, 'confidence': "sampleConf", 'classification': "sampleClass"}
+        inputData = {'inputname': inputname, 'confidence': "sampleConf", 'classification': classification}
         outputData = {'outputname': outputname, 'confidence': "sampleConf", 'classification': "sampleClass"}
         return render_template('website.html', data=filterOptions(), input=inputData, filterselected=filtername, output=outputData)
     else:
