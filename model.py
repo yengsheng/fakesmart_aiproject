@@ -10,10 +10,10 @@ class CNN(nn.Module):
   def __init__(self, ):
     super().__init__()
     
-    self.conv1 = nn.Conv2d(in_channels = channels, out_channels=16, kernel_size = (3,1))
-    self.conv2 = nn.Conv2d(in_channels = 16, out_channels=32, kernel_size = (3,1))
-    self.conv3 = nn.Conv2d(in_channels = 32, out_channels=64, kernel_size = (3,1))
-    self.conv4 = nn.Conv2d(in_channels = 64, out_channels=128, kernel_size = (3,1))
+    self.conv1 = nn.Conv2d(in_channels = channels, out_channels=16, kernel_size = (3,3))
+    self.conv2 = nn.Conv2d(in_channels = 16, out_channels=32, kernel_size = (3,3))
+    self.conv3 = nn.Conv2d(in_channels = 32, out_channels=64, kernel_size = (3,3))
+    self.conv4 = nn.Conv2d(in_channels = 64, out_channels=128, kernel_size = (3,3))
     
     self.batchnorm1 = nn.BatchNorm2d(32)
     self.batchnorm2 = nn.BatchNorm2d(128)
@@ -23,12 +23,12 @@ class CNN(nn.Module):
     self.maxpool2 = nn.MaxPool2d((2,1))
     self.dropout = nn.Dropout(0.5)
 
-    self.linear1 = nn.Linear(140800,512)
+    self.linear1 = nn.Linear(123904,512)
     # self.linear1 = nn.Linear(512,512)
     self.linear2 = nn.Linear(512,43)
 
   def forward(self, x):
-
+    
     out = F.relu(self.conv1(x))
     out = F.relu(self.conv2(out))
     out = self.maxpool1(out)
@@ -52,7 +52,7 @@ def loadModel():
 
   device = torch.device('cpu')
   model = CNN()
-  model.load_state_dict(torch.load("./models/model_bs1024_100_sd.pt", map_location=device))
+  model.load_state_dict(torch.load("./models/model_bs512_100_sd.pt", map_location=device))
   model.eval()
 
   return model
