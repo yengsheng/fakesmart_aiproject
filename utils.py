@@ -1,3 +1,7 @@
+import os
+
+MODEL_CHECKPOINT_FILE = os.path.join('.', 'models', 'model_bs1024_100.pt')
+
 # Label Overview
 classes = { 0:'Speed limit (20km/h)',
             1:'Speed limit (30km/h)', 

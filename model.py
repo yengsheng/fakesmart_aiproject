@@ -47,12 +47,13 @@ class CNN(nn.Module):
     out = self.linear2(out)
 
     return out
-
+    
 def loadModel():
-
-  device = torch.device('cpu')
-  model = CNN()
-  model.load_state_dict(torch.load("./models/model_bs512_100_sd.pt", map_location=device))
+  device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+  # model = CNN()
+  # model.load_state_dict(torch.load(MODEL_CHECKPOINT_FILE, map_location=device))
+  model = torch.load(MODEL_CHECKPOINT_FILE)
+  model.to(device)
   model.eval()
 
   return model
