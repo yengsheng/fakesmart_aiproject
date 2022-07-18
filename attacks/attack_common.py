@@ -6,7 +6,8 @@ import os
 
 VISUALISATIONS_DIR = os.path.join('.', 'attacks', 'visualisations')
 
-def test_and_visualise_attack(model, test_attack_func, test_loader, num_tests, title):
+
+def test_and_visualise_basic_attack(model, test_attack_func, test_loader, num_tests, title):
   epsilons = [0, .005, .01, .015, .02, .025, .03, .05, 0.1]
   accuracies = []
   examples = []
