@@ -1,11 +1,12 @@
 from . import attack_common
-
 import os
 import numpy as np
-
+import time
 import torch
 from torch import optim, Tensor
 from torch.autograd import Variable
+from torchvision.utils import make_grid
+
 import matplotlib.pyplot as plt
 
 def l2_loss_func(x, w):
@@ -16,7 +17,7 @@ def carlini_wagner_attack(model, img: Tensor, ori_label, target=False, num_class
     c = 0.001
     c_upper_bound = 1e10
     c_lower_bound = 0
-    lr = 0.001
+    lr = 0.01
     min_loss = 1e10
     best_attack_img = img
 
@@ -24,7 +25,6 @@ def carlini_wagner_attack(model, img: Tensor, ori_label, target=False, num_class
     if not target:
         target_label = ori_label
 
-    print("num_classes", num_classes)
     identity_matrix = Variable(torch.from_numpy(np.eye(num_classes)[target_label]).cuda().float())
     
     # delta = 0.5(tanh(w) + 1 ) - x
@@ -48,9 +48,9 @@ def carlini_wagner_attack(model, img: Tensor, ori_label, target=False, num_class
             # Minimise loss
             total_loss.backward(retain_graph=True)
             optimizer.step()
-            if i % 200 == 0:
-                 print('Itr {}: total loss: {}, l2_loss:{}, new_loss:{}'
-                       .format(i, total_loss.item(), l2_loss.item(), new_loss.item()))
+            # if i % 200 == 0:
+            #      print('Itr {}: total loss: {}, l2_loss:{}, new_loss:{}'
+            #            .format(i, total_loss.item(), l2_loss.item(), new_loss.item()))
             
             # Could also add a confidence level to make the image further away from original
             pred_result = new_pred.argmax(1, keepdim=True).item()
@@ -93,12 +93,12 @@ def test_cw_attack(model, device, test_loader, num_tests, num_classes, target_la
     # List of successful adversarial samples
     attack_sample_list = []
 
-    for image, label in test_loader:
+    for image, labels in test_loader:
         if image is None:
           continue
 
         # label = torch.unsqueeze(label, 0)
-        _, label = torch.max(label.data, 1)
+        _, label = torch.max(labels.data, 1)
 
         # Skip image if the target label is the same as the current label
         if target_label == label.item():
@@ -123,6 +123,7 @@ def test_cw_attack(model, device, test_loader, num_tests, num_classes, target_la
 
         # Attack
         attack_image = carlini_wagner_attack(model, image, label.item(), target=target_label!=-1, num_classes=num_classes, target_label=target_label)
+        # attack_image = c_w_test.carlini_wagner_l2(model, image, labels=label, targeted=target_label!=-1)
 
         attack_image_unsqueezed = torch.unsqueeze(attack_image, 0)
         # Get new prediction after attack
@@ -140,7 +141,10 @@ def test_cw_attack(model, device, test_loader, num_tests, num_classes, target_la
             if len(attack_sample_list) < 10:
                 adv_ex = attack_image.squeeze().detach().cpu().numpy()
                 attack_sample_list.append((init_pred.item(), attack_pred.item(), adv_ex))
-
+                grid = make_grid(attack_image_unsqueezed.data.cpu(), normalize=True).permute(1,2,0).numpy()
+                plt.imshow(grid)
+                plt.savefig(os.path.join(attack_common.VISUALISATIONS_DIR, "attack_image" + str(int(time.time()))))
+                plt.show()
     final_accuracy = accuracy_counter/float(num_tests)
     
     # Display for progress
@@ -162,23 +166,23 @@ def test_and_visualise_cw_attack(model, test_loader, num_tests, num_classes, tar
     print("Getting original accuracies")
     accuracy_counter = 0
     # List of successful adversarial samples
-    sample_list = []
+    # sample_list = []
     
-    for image, label in test_loader:
-        _, label = torch.max(label.data, 1)
-        output = model(image)
-        pred = output.max(1, keepdim = True)[1]
+    # for image, label in test_loader:
+    #     _, label = torch.max(label.data, 1)
+    #     output = model(image)
+    #     pred = output.max(1, keepdim = True)[1]
 
-        # Check if pred correct
-        if pred.item() == label.item():
-            accuracy_counter += 1    
-            if len(sample_list) < 10:
-                ex = image.squeeze().detach().cpu().numpy()
-                sample_list.append((pred.item(), pred.item(), ex))
+    #     # Check if pred correct
+    #     if pred.item() == label.item():
+    #         accuracy_counter += 1    
+    #         if len(sample_list) < 10:
+    #             ex = image.squeeze().detach().cpu().numpy()
+    #             sample_list.append((pred.item(), pred.item(), ex))
 
-    accuracies.append(accuracy_counter/float(num_tests))
-    examples.append(sample_list)
-    print("original accuracy:", accuracies[0])
+    # accuracies.append(accuracy_counter/float(num_tests))
+    # examples.append(sample_list)
+    # print("original accuracy:", accuracies[0])
 
     # Run attack
     print("Carlini Wagner: running attack...")

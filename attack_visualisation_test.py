@@ -22,7 +22,8 @@ np.random.seed(0)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 full_dataset = ImageDataset(device)
-train_size = int(0.7 * len(full_dataset))
+# train_size = int(0.7 * len(full_dataset))
+train_size = int(0.95 * len(full_dataset))
 test_size = len(full_dataset) - train_size
 train_dataset, test_dataset = torch.utils.data.random_split(full_dataset, [train_size, test_size])
 
