@@ -2,6 +2,8 @@
 !/data/readme.md
 /venv
 /static/uploads/*
+/static/filter/*
+!/static/filter/noise.jpg
 /static/generated/*
 !/static/generated/sample.jpg
 /__pycache__

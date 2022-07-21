@@ -41,11 +41,11 @@ def generate():
         confidence, classification, image_forward = prediction(os.path.join(app.config['UPLOAD_FOLDER'], inputname), app.model)
 
         # function to generate confidence score for new image with filter
-        confidence_a, classification_a, generated_name = attack(image_forward, app.model, classes[classification], attOptions[filtername])
+        confidence_a, classification_a, generated_name, noise_name = attack(inputname, image_forward, app.model, classes[classification], filtername)
 
         inputData = {'inputname': inputname, 'confidence': confidence, 'classification': classes[classification]}
         outputData = {'outputname': generated_name, 'confidence': confidence_a, 'classification': classes[classification_a]}
-        attackData = {'attackSelected': filtername, 'noise': "noise.jpg"}
+        attackData = {'attackSelected': filtername, 'noise': noise_name}
         return render_template('website.html', data=filterOptions(), input=inputData, attack=attackData, output=outputData)
     else:
         flash('Allowed image types are: png, jpg, jpeg')

@@ -74,21 +74,24 @@ def prediction(path, m):
 
   return conf.detach().numpy()[0] * 100, y_pred_in.numpy()[0], image
 
-def attack(image, m, original_label, att):
+def attack(filename, image, m, original_label, att):
+
+  generated_name = "g_" + filename + att + ".jpg"
+  noise_name = "n_" + filename + att + ".jpg"
 
   # need grad for attack to work
   image_grad = image.clone().detach().requires_grad_(True)
 
   # untargetted attack
-  new_image = a.iugm_attack(image_grad, att, m, original_label)
+  new_image = a.iugm_attack(image_grad, attOptions[att], m, original_label)
   img = torchvision.transforms.ToPILImage()(new_image)
-  img.save(os.path.join(GENERATED_FOLDER, 'generated.jpg'))
+  img.save(os.path.join(GENERATED_FOLDER, generated_name))
 
   # generate noise
   image = image.squeeze(0)
   noise = torch.subtract(image, new_image)
   img = torchvision.transforms.ToPILImage()(noise)
-  img.save(os.path.join(NOISE_FOLDER, 'noise.jpg'))
+  img.save(os.path.join(NOISE_FOLDER, noise_name))
 
   # get new iamge prediction
   new_image = new_image.unsqueeze(0)
@@ -96,4 +99,4 @@ def attack(image, m, original_label, att):
   y_pred = F.softmax(y_pred, dim=1)
   conf, y_pred_in = torch.max(y_pred, 1)
 
-  return conf.detach().numpy()[0] * 100, y_pred_in.numpy()[0], "generated.jpg"
+  return conf.detach().numpy()[0] * 100, y_pred_in.numpy()[0], generated_name, noise_name
