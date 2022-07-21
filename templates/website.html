@@ -26,16 +26,17 @@
                     {% endif %}
                 </div>
                 <div id="filter">
-                    <h4>Choose your filter</h4>
+                    <h4>Choose your Attack</h4>
                     <select name="selected">
                         {% for f in data %}
                         <option value="{{f.name}}">{{f.name}}</option>
                         {% endfor %}
                     </select>
-                    {% if filterselected %}
+                    {% if attack %}
                         <br><br><br>
-                        <img src="{{ url_for('filter_image', filtername=filterselected) }}" width="35%">
-                        <h5>Filter Selected  : {{filterselected}}</h5>
+                        <h5>Noise generated:</h5>
+                        <img src="{{ url_for('filter_image', filtername=attack.noise) }}" width="35%">
+                        <h5>Attack Selected  : {{attack.attackSelected}}</h5>
                     {% endif %}
                 </div>
                 <div id="output">

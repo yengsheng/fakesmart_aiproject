@@ -1,6 +1,17 @@
 import os
 
 MODEL_CHECKPOINT_FILE = os.path.join('.', 'models', 'model_bs1024_100.pt')
+NOISE_FOLDER = os.path.join('.', 'static', 'filter')
+GENERATED_FOLDER = os.path.join('.', 'static', 'generated')
+
+# attack options
+attOptions = {
+    'Untargetted Epsilon 0.001': 0.001,
+    'Untargetted Epsilon 0.01': 0.01,
+    'Untargetted Epsilon 0.1': 0.1,
+    'Untargetted Epsilon 1.0': 1,
+}
+    
 
 # Label Overview
 classes = { 0:'Speed limit (20km/h)',

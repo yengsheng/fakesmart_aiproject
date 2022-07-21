@@ -4,6 +4,7 @@ import urllib.request
 from flask import Flask, flash, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 from model import *
+from utils import *
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
@@ -11,12 +12,10 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def filterOptions():
-    filterPath = app.static_folder + "/filter"
-    filterOption = []
-    for filename in os.listdir(filterPath):
-        if os.path.isfile(os.path.join(filterPath, filename)):
-            filterOption.append({'name': filename})
-    return filterOption
+    list = []
+    for key in attOptions.keys():
+        list.append({'name': key})
+    return list
 
 @app.route('/')
 def upload_form():
@@ -39,14 +38,15 @@ def generate():
 
         # TODO
         ## function to generate confidence score for original image
-        confidence, classification = prediction(os.path.join(app.config['UPLOAD_FOLDER'], inputname), app.model)
+        confidence, classification, image_forward = prediction(os.path.join(app.config['UPLOAD_FOLDER'], inputname), app.model)
+
         # function to generate confidence score for new image with filter
+        confidence_a, classification_a, generated_name = attack(image_forward, app.model, classes[classification], attOptions[filtername])
 
-        outputname = "sample.jpg"
-
-        inputData = {'inputname': inputname, 'confidence': confidence, 'classification': classification}
-        outputData = {'outputname': outputname, 'confidence': "sampleConf", 'classification': "sampleClass"}
-        return render_template('website.html', data=filterOptions(), input=inputData, filterselected=filtername, output=outputData)
+        inputData = {'inputname': inputname, 'confidence': confidence, 'classification': classes[classification]}
+        outputData = {'outputname': generated_name, 'confidence': confidence_a, 'classification': classes[classification_a]}
+        attackData = {'attackSelected': filtername, 'noise': "noise.jpg"}
+        return render_template('website.html', data=filterOptions(), input=inputData, attack=attackData, output=outputData)
     else:
         flash('Allowed image types are: png, jpg, jpeg')
         return redirect(request.url)
