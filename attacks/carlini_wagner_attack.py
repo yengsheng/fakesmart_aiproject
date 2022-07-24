@@ -40,7 +40,7 @@ def carlini_wagner_attack(model, img: Tensor, ori_label, target=False, num_class
 
             #0.5*tanh(w+pert)+0.5
             adv_img = (torch.tanh(w + modifier) + 1) / 2
-            l2_loss = l2_loss_func(w, adv_img) 
+            l2_loss = l2_loss_func(adv_img, w) 
             new_pred = model(adv_img)
             new_loss = c*f6(new_pred, identity_matrix, target, device)
             total_loss = l2_loss + new_loss
