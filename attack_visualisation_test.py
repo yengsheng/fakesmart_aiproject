@@ -23,10 +23,10 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 full_dataset = ImageDataset(device)
 # train_size = int(0.7 * len(full_dataset))
-train_size = int(0.95 * len(full_dataset))
+train_size = int(0.75 * len(full_dataset))
 test_size = len(full_dataset) - train_size
 train_dataset, test_dataset = torch.utils.data.random_split(full_dataset, [train_size, test_size])
-
+print("Tested on ", test_size, "images")
 test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=0)
 
 model = loadModel()
@@ -34,7 +34,7 @@ model = loadModel()
 
 print("GPU Detected:", torch.cuda.is_available())
 
-# attack_common.test_and_visualise_basic_attack(model, iugm_attack.test_iugm_attack, test_dataloader, test_size, "iugm_attack")
-# attack_common.test_and_visualise_basic_attack(model, itfgsm_attack.test_itfgsm_attack, test_dataloader, test_size, "itfgsm_attack")
+attack_common.test_and_visualise_basic_attack(model, iugm_attack.test_iugm_attack, test_dataloader, test_size, "iugm_attack")
+attack_common.test_and_visualise_basic_attack(model, itfgsm_attack.test_itfgsm_attack, test_dataloader, test_size, "itfgsm_attack")
 # carlini_wagner_attack.test_and_visualise_cw_attack(model, test_dataloader, test_size, 43, 1)
-carlini_wagner_attack.test_and_visualise_cw_attack(model, test_dataloader, test_size, NUM_CATEGORIES, 1)
+# carlini_wagner_attack.test_and_visualise_cw_attack(model, test_dataloader, test_size, NUM_CATEGORIES, 1)

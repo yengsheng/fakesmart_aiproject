@@ -40,27 +40,27 @@ def test_and_visualise_basic_attack(model, test_attack_func, test_loader, num_te
   plt.show()
   
   # Show some example attack images
-  cnt = 0
+  examples_count = 0
 
   # Initialize figure
   plt.figure(figsize = (30, 30))
 
-  # Browse through epsilon values and adversarial examples
+  # Show all examples for each epsilon value
   for i in range(len(epsilons)):
       for j in range(len(examples[i])):
-          cnt += 1
-          plt.subplot(len(epsilons), len(examples[0]), cnt)
+          examples_count += 1
+          plt.subplot(len(epsilons), len(examples[0]), examples_count)
           
-          # Remove x-axis and y-axis ticks from plot
+          # Remove axis markings
           plt.xticks([], [])
           plt.yticks([], [])
           
           if j == 0:
-              plt.ylabel("Eps: {}".format(epsilons[i]), fontsize = 14)
+              plt.ylabel("Epsilon: {}".format(epsilons[i]), fontsize = 14)
               
           # Labels for each image subplot
           orig, adv, attack_img = examples[i][j]
-          plt.title("{} --> {}".format(orig, adv))
+          plt.title("ori: {}, attack: {}".format(orig, adv))
 
           img = attack_img.swapaxes(0,1)
           new_img = img.swapaxes(1,2)
