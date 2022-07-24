@@ -8,6 +8,7 @@ from torch.autograd import Variable
 from torchvision.utils import make_grid
 
 import matplotlib.pyplot as plt
+import datetime
 
 def l2_loss_func(x, w):
     return torch.dist(x,((torch.tanh(w) + 1)/2), p=2)
@@ -93,9 +94,11 @@ def test_cw_attack(model, device, test_loader, num_tests, num_classes, target_la
     # List of successful adversarial samples
     attack_sample_list = []
 
-    for image, labels in test_loader:
+    for i, (image, labels) in enumerate(test_loader):
         if image is None:
           continue
+        if i %20 == 0:
+            print("images attacked:", i, datetime.datetime.now())
 
         # label = torch.unsqueeze(label, 0)
         _, label = torch.max(labels.data, 1)
@@ -123,7 +126,6 @@ def test_cw_attack(model, device, test_loader, num_tests, num_classes, target_la
 
         # Attack
         attack_image = carlini_wagner_attack(model, image, label.item(), target=target_label!=-1, num_classes=num_classes, target_label=target_label)
-        # attack_image = c_w_test.carlini_wagner_l2(model, image, labels=label, targeted=target_label!=-1)
 
         attack_image_unsqueezed = torch.unsqueeze(attack_image, 0)
         # Get new prediction after attack
@@ -141,10 +143,11 @@ def test_cw_attack(model, device, test_loader, num_tests, num_classes, target_la
             if len(attack_sample_list) < 10:
                 adv_ex = attack_image.squeeze().detach().cpu().numpy()
                 attack_sample_list.append((init_pred.item(), attack_pred.item(), adv_ex))
-                grid = make_grid(attack_image_unsqueezed.data.cpu(), normalize=True).permute(1,2,0).numpy()
-                plt.imshow(grid)
-                plt.savefig(os.path.join(attack_common.VISUALISATIONS_DIR, "attack_image" + str(int(time.time()))))
-                plt.show()
+                print("predictions:", len(attack_sample_list), attack_output.data)
+                # grid = make_grid(attack_image_unsqueezed.data.cpu(), normalize=True).permute(1,2,0).numpy()
+                # plt.imshow(grid)
+                # plt.savefig(os.path.join(attack_common.VISUALISATIONS_DIR, "attack_image" + str(int(time.time()))))
+                # plt.show()
     final_accuracy = accuracy_counter/float(num_tests)
     
     # Display for progress
@@ -166,23 +169,23 @@ def test_and_visualise_cw_attack(model, test_loader, num_tests, num_classes, tar
     print("Getting original accuracies")
     accuracy_counter = 0
     # List of successful adversarial samples
-    # sample_list = []
+    sample_list = []
     
-    # for image, label in test_loader:
-    #     _, label = torch.max(label.data, 1)
-    #     output = model(image)
-    #     pred = output.max(1, keepdim = True)[1]
+    for image, label in test_loader:
+        _, label = torch.max(label.data, 1)
+        output = model(image)
+        pred = output.max(1, keepdim = True)[1]
 
-    #     # Check if pred correct
-    #     if pred.item() == label.item():
-    #         accuracy_counter += 1    
-    #         if len(sample_list) < 10:
-    #             ex = image.squeeze().detach().cpu().numpy()
-    #             sample_list.append((pred.item(), pred.item(), ex))
+        # Check if pred correct
+        if pred.item() == label.item():
+            accuracy_counter += 1    
+            if len(sample_list) < 10:
+                ex = image.squeeze().detach().cpu().numpy()
+                sample_list.append((pred.item(), pred.item(), ex))
 
-    # accuracies.append(accuracy_counter/float(num_tests))
-    # examples.append(sample_list)
-    # print("original accuracy:", accuracies[0])
+    accuracies.append(accuracy_counter/float(num_tests))
+    examples.append(sample_list)
+    print("original accuracy:", accuracies[0])
 
     # Run attack
     print("Carlini Wagner: running attack...")
@@ -190,10 +193,10 @@ def test_and_visualise_cw_attack(model, test_loader, num_tests, num_classes, tar
     accuracies.append(acc)
     examples.append(ex)
 
-    title = "carlini_wagner_attack"
+    title = "targeted_carlini_wagner_attack"
  
     # Show some example attack images
-    cnt = 0
+    examples_count = 0
 
     # Initialize figure
     plt.figure(figsize = (30, 30))
@@ -201,8 +204,8 @@ def test_and_visualise_cw_attack(model, test_loader, num_tests, num_classes, tar
     # Browse through epsilon values and adversarial examples
     for i in range(len(accuracies)):
         for j in range(len(examples[i])):
-            cnt += 1
-            plt.subplot(len(accuracies), len(examples[0]), cnt)
+            examples_count += 1
+            plt.subplot(len(accuracies), len(examples[0]), examples_count)
             
             # Remove x-axis and y-axis ticks from plot
             plt.xticks([], [])
@@ -210,13 +213,13 @@ def test_and_visualise_cw_attack(model, test_loader, num_tests, num_classes, tar
             
             if j == 0:
                 if i == 0:
-                    plt.ylabel("Original Accuracy:{}".format(accuracies[i]), fontsize = 14)
+                    plt.ylabel("Original Accuracy: {}".format(accuracies[i]), fontsize = 14)
                 else:
-                    plt.ylabel("Attack Accuracy:{}".format(accuracies[i]), fontsize = 14)
+                    plt.ylabel("Attack Accuracy: {}".format(accuracies[i]), fontsize = 14)
 
             # Labels for each image subplot
             orig, adv, attack_img = examples[i][j]
-            plt.title("{} --> {}".format(orig, adv))
+            plt.title("ori: {}, attack: {}".format(orig, adv))
 
             img = attack_img.swapaxes(0,1)
             new_img = img.swapaxes(1,2)
