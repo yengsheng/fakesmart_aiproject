@@ -25,8 +25,10 @@ def carlini_wagner_attack(model, img: Tensor, ori_label, target=False, num_class
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if not target:
         target_label = ori_label
-
-    identity_matrix = Variable(torch.from_numpy(np.eye(num_classes)[target_label]).cuda().float())
+    if torch.cuda.is_available():
+        identity_matrix = Variable(torch.from_numpy(np.eye(num_classes)[target_label]).cuda().float())
+    else:
+        identity_matrix = Variable(torch.from_numpy(np.eye(num_classes)[target_label]).float())
     
     # delta = 0.5(tanh(w) + 1 ) - x
     # Why multiple by 1-0.0001 no one knows

@@ -7,6 +7,7 @@ from PIL import Image
 
 import attacks.iugm_attack as attackU
 import attacks.itfgsm_attack as attackT
+import attacks.carlini_wagner_attack as attackC
 from utils import *
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -75,7 +76,7 @@ def prediction(path, m):
 
   return conf.detach().numpy()[0] * 100, y_pred_in.numpy()[0], image
 
-def attack(filename, image, m, original_label, att, e):
+def attack(filename, image, m, original_label, att, e, ori_label_number):
 
   generated_name = "g_" + filename + "_" + att + ".jpg"
   noise_name = "n_" + filename + "_" + att + ".jpg"
@@ -97,6 +98,9 @@ def attack(filename, image, m, original_label, att, e):
   elif att_cat == "Targetted":
     new_image, isSuccess = attackT.itfgsm_attack(image_grad, e, m, original_label, attOptions[att])
     print('Is targetted attack successful? ', isSuccess)
+  elif att_cat == "Carlini Wagner Attack":
+    new_image = attackC.carlini_wagner_attack(m, image_grad, ori_label_number, target_label=attOptions[att], target=True)
+    isSuccess = True
 
   if isSuccess:
     img = torchvision.transforms.ToPILImage()(new_image)

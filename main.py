@@ -48,7 +48,7 @@ def generate():
         confidence, classification, image_forward = prediction(os.path.join(app.config['UPLOAD_FOLDER'], inputname), app.model)
 
         # function to generate confidence score for new image with filter
-        confidence_a, classification_a, generated_name, noise_name = attack(inputname.split(".")[0], image_forward, app.model, classes[classification], filtername, epOption[epname])
+        confidence_a, classification_a, generated_name, noise_name = attack(inputname.split(".")[0], image_forward, app.model, classes[classification], filtername, epOption[epname], classification)
 
         if confidence_a == 0 and classification_a == 0:
             inputData = {'inputname': inputname, 'confidence': confidence, 'classification': classes[classification]}
