@@ -17,9 +17,15 @@ def filterOptions():
         list.append({'name': key})
     return list
 
+def eOptions():
+    list = []
+    for key in epOption.keys():
+        list.append({'name': key})
+    return list
+
 @app.route('/')
 def upload_form():
-    return render_template('website.html', data=filterOptions())
+    return render_template('website.html', data=filterOptions(), epsilon=eOptions())
 
 @app.route('/', methods=['POST'])
 def generate():
@@ -32,6 +38,7 @@ def generate():
         return redirect(request.url)
     if file and allowed_file(file.filename):
         filtername = request.form.get('selected')
+        epname = request.form.get('epsilon')
         inputname = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], inputname))
         flash('Image successfully uploaded!')
@@ -41,17 +48,17 @@ def generate():
         confidence, classification, image_forward = prediction(os.path.join(app.config['UPLOAD_FOLDER'], inputname), app.model)
 
         # function to generate confidence score for new image with filter
-        confidence_a, classification_a, generated_name, noise_name = attack(inputname.split(".")[0], image_forward, app.model, classes[classification], filtername)
+        confidence_a, classification_a, generated_name, noise_name = attack(inputname.split(".")[0], image_forward, app.model, classes[classification], filtername, epOption[epname])
 
         if confidence_a == 0 and classification_a == 0:
             inputData = {'inputname': inputname, 'confidence': confidence, 'classification': classes[classification]}
             outputData = {'outputname': 'failed', 'confidence': 'failed', 'classification': 'failed'}
-            attackData = {'attackSelected': 'failed', 'noise': 'failed'}
+            attackData = {'attackSelected': 'failed', 'noise': 'failed', 'epsilon': 'failed'}
         else:
             inputData = {'inputname': inputname, 'confidence': confidence, 'classification': classes[classification]}
             outputData = {'outputname': generated_name, 'confidence': confidence_a, 'classification': classes[classification_a]}
-            attackData = {'attackSelected': filtername, 'noise': noise_name}
-        return render_template('website.html', data=filterOptions(), input=inputData, attack=attackData, output=outputData)
+            attackData = {'attackSelected': filtername, 'noise': noise_name, 'epsilon': epname}
+        return render_template('website.html', data=filterOptions(), epsilon=eOptions(), input=inputData, attack=attackData, output=outputData)
     else:
         flash('Allowed image types are: png, jpg, jpeg')
         return redirect(request.url)

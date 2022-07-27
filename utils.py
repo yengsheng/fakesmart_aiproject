@@ -6,10 +6,7 @@ GENERATED_FOLDER = os.path.join('.', 'static', 'generated')
 
 # attack options
 attOptions = {
-    'Untargetted - Epsilon 0.001': 0.001,
-    'Untargetted - Epsilon 0.01': 0.01,
-    'Untargetted - Epsilon 0.1': 0.1,
-    'Untargetted - Epsilon 1.0': 1,
+    'Untargetted': 0,
     'Targetted - Speed limit (20km/h)': 0, 
     'Targetted - Speed limit (30km/h)': 1, 
     'Targetted - Speed limit (50km/h)': 2, 
@@ -53,6 +50,18 @@ attOptions = {
     'Targetted - Roundabout mandatory': 40, 
     'Targetted - End of no passing': 41, 
     'Targetted - End no passing veh > 3.5 tons': 42
+}
+
+# episolon option
+epOption = {
+    '0.001': 0.001,
+    '0.005': 0.005,
+    '0.01': 0.01,
+    '0.05': 0.05,
+    '0.1': 0.1,
+    '0.5': 0.5,
+    '1.0': 1,
+    '5.0': 5,
 }
     
 

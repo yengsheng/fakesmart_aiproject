@@ -32,11 +32,17 @@
                         <option value="{{f.name}}">{{f.name}}</option>
                         {% endfor %}
                     </select>
+                    <select name="epsilon">
+                        {% for f in epsilon %}
+                        <option value="{{f.name}}">{{f.name}}</option>
+                        {% endfor %}
+                    </select>
                     {% if attack %}
                         <br><br><br>
                         <h5>Noise generated:</h5>
                         <img src="{{ url_for('filter_image', filtername=attack.noise) }}" width="35%">
                         <h5>Attack Selected  : {{attack.attackSelected}}</h5>
+                        <h5>Epsilon Value    : {{attack.epsilon}}</h5>
                     {% endif %}
                 </div>
                 <div id="output">

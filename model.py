@@ -75,7 +75,7 @@ def prediction(path, m):
 
   return conf.detach().numpy()[0] * 100, y_pred_in.numpy()[0], image
 
-def attack(filename, image, m, original_label, att):
+def attack(filename, image, m, original_label, att, e):
 
   generated_name = "g_" + filename + "_" + att + ".jpg"
   noise_name = "n_" + filename + "_" + att + ".jpg"
@@ -92,10 +92,10 @@ def attack(filename, image, m, original_label, att):
 
   if att_cat == "Untargetted":
     # untargetted attack
-    new_image = attackU.iugm_attack(image_grad, attOptions[att], m, original_label)
+    new_image = attackU.iugm_attack(image_grad, e, m, original_label)
     isSuccess = True
   elif att_cat == "Targetted":
-    new_image, isSuccess = attackT.itfgsm_attack(image_grad, 0.005, m, original_label, attOptions[att])
+    new_image, isSuccess = attackT.itfgsm_attack(image_grad, e, m, original_label, attOptions[att])
     print('Is targetted attack successful? ', isSuccess)
 
   if isSuccess:
