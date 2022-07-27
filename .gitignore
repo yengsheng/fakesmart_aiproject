@@ -4,5 +4,7 @@
 /static/uploads/*
 /static/generated/*
 !/static/generated/sample.jpg
+/static/filter/*
+!/static/filter/stop.jpg
 /__pycache__
 /models/*.pt
