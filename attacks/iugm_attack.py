@@ -97,12 +97,12 @@ def test_iugm_attack(model, device, test_loader, epsilon, num_tests):
         if eps_pred.item() == label.item():
             accuracy_counter += 1
             # If epsilon is 0, then we keep some examples anyway
-            if (epsilon == 0) and (len(attack_sample_list) < 5):
+            if (epsilon == 0) and (len(attack_sample_list) < 10):
                 adv_ex = eps_image.squeeze().detach().cpu().numpy()
                 attack_sample_list.append((init_pred.item(), eps_pred.item(), adv_ex))
         else:
             # Save some attack images for display
-            if len(attack_sample_list) < 5:
+            if len(attack_sample_list) < 10:
                 adv_ex = eps_image.squeeze().detach().cpu().numpy()
                 attack_sample_list.append((init_pred.item(), eps_pred.item(), adv_ex))
 
