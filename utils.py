@@ -1,6 +1,7 @@
 import os
 
-MODEL_CHECKPOINT_FILE = os.path.join('.', 'models', 'model_bs1024_100.pt')
+MODEL = 'model1024.pt'
+MODEL_CHECKPOINT_FILE = os.path.join('.', 'models', MODEL)
 NOISE_FOLDER = os.path.join('.', 'static', 'filter')
 GENERATED_FOLDER = os.path.join('.', 'static', 'generated')
 

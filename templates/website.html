@@ -9,24 +9,24 @@
             <h1>Adverserial Machine Learning</h1>
             <div id="main">
                 <div id="input">
-                    <h4>Upload your image</h4>
+                    <h3>Upload your image</h3>
                     <input type="file" id="myFile" name="file">
                     {% with messages = get_flashed_messages() %}
                         {% if messages %}
                             {% for message in messages %}
-                                <h4>{{ message }}</h4>
+                                <h3>{{ message }}</h3>
                             {% endfor %}
                         {% endif %}
                     {% endwith %}
                     {% if input %}
                         <img src="{{ url_for('input_image', inputname=input.inputname) }}" width="35%">
-                        <h5>File Name      : {{input.inputname}}</h5>
-                        <h5>Classification : {{input.classification}}</h5>
-                        <h5>Confidence     : {{input.confidence}} %</h5>
+                        <h3>File Name      : {{input.inputname}}</h3>
+                        <h3>Classification : {{input.classification}}</h3>
+                        <h3>Confidence     : {{input.confidence}} %</h3>
                     {% endif %}
                 </div>
                 <div id="filter">
-                    <h4>Choose your Attack</h4>
+                    <h3>Choose your Attack</h3>
                     <select name="selected">
                         {% for f in data %}
                         <option value="{{f.name}}">{{f.name}}</option>
@@ -37,24 +37,24 @@
                         <option value="{{f.name}}">{{f.name}}</option>
                         {% endfor %}
                     </select>
-                    <h5 text-align="center">For Carlini Wagner Attack, the epsilon value does not matter. ALSO, DO NOT REFRESH if you choose it. Takes awhile to generate the output.</h4>
+                    <h3 text-align="center">For Carlini Wagner Attack, the epsilon value does not matter. ALSO, DO NOT REFRESH if you choose it. Takes awhile to generate the output.</h4>
                     {% if attack %}
                         <br><br><br>
-                        <h5>Noise generated:</h5>
+                        <h3>Noise generated:</h3>
                         <img src="{{ url_for('filter_image', filtername=attack.noise) }}" width="35%">
-                        <h5>Attack Selected  : {{attack.attackSelected}}</h5>
-                        <h5>Epsilon Value    : {{attack.epsilon}}</h5>
+                        <h3>Attack Selected  : {{attack.attackSelected}}</h3>
+                        <h3>Epsilon Value    : {{attack.epsilon}}</h3>
                     {% endif %}
                 </div>
                 <div id="output">
-                    <h4>Output Classification & Image</h4>
+                    <h3>Output Classification & Image</h3>
                     <button type="submit">Generate</button>
                     {% if output %}
                         <br><br><br>
                         <img src="{{ url_for('output_image', outputname=output.outputname) }}" width="35%">
-                        <h5>File Name      : {{output.outputname}}</h5>
-                        <h5>Classification : {{output.classification}}</h5>
-                        <h5>Confidence     : {{output.confidence}}</h5>
+                        <h3>File Name      : {{output.outputname}}</h3>
+                        <h3>Classification : {{output.classification}}</h3>
+                        <h3>Confidence     : {{output.confidence}}</h3>
                     {% endif %}
                 </div>
             </div>
