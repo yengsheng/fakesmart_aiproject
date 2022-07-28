@@ -15,7 +15,7 @@ pip3 install -r requirements.txt
 ```
 Then you will need to navigate to the folder, 'data', and download the dataset and put it into this folder. The link can be found in the [readme](https://github.com/yengsheng/fakesmart_aiproject/tree/main/data) in the 'data' folder. Also, in the 'models' folder, you will need to download the pretrained image recognition model. The link can be found in the [readme](https://github.com/yengsheng/fakesmart_aiproject/tree/main/models) in the 'models' folder. With this, you have completed all the prerequisites needed to run our program.
 
-\subsection{Running the GUI}
+# Running the GUI
 You can start the GUI by running the command at the root of the project folder:
 ```BASH
 python3 main.py
