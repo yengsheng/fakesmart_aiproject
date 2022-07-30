@@ -13,6 +13,13 @@ The first step to run our program is to clone Github project. To install the var
 ```BASH
 pip3 install -r requirements.txt
 ```
+
+If you plan to utilize your machine's GPU cuda, use the following command instead:
+```BASH
+pip3 install -r requirements_cuda.txt
+```
+
+
 Then you will need to navigate to the folder, 'data', and download the dataset and put it into this folder. The link can be found in the [readme](https://github.com/yengsheng/fakesmart_aiproject/tree/main/data) in the 'data' folder. Also, in the 'models' folder, you will need to download the pretrained image recognition model. The link can be found in the [readme](https://github.com/yengsheng/fakesmart_aiproject/tree/main/models) in the 'models' folder. With this, you have completed all the prerequisites needed to run our program.
 
 # Running the GUI
